@@ -1,49 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ESP32 GPIO Controller</title>
-
-<link rel="stylesheet" href="styles.css">
-<script type="module" src="app.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SBNP - Distrik Navigasi Tanjung Intan</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
 </head>
-
 <body>
 
-<div class="card">
+  <div class="card">
+    <div class="header">
+      <h3>Distrik Navigasi Tanjung Intan</h3>
+      <h1>Menara Suar Bengkel Navigasi</h1>
+      <div id="statusBadge" class="status-badge offline">Offline</div>
+    </div>
 
-  <h1>ESP32 GPIO Control</h1>
-  <div id="statusBadge" class="status-badge offline">Offline</div>
+    <!-- Tampilan Login -->
+    <div id="authBox">
+      <input id="emailField" type="email" placeholder="Masukkan Email" />
+      <input id="passwordField" type="password" placeholder="Masukkan Password" />
+      <button id="loginBtn" class="btn login-btn">Login ke Sistem</button>
+      <p id="authMsg"></p>
+    </div>
 
-  <!-- Login UI -->
-  <div id="authBox">
-    <input id="emailField" type="email" placeholder="Email" />
-    <input id="passwordField" type="password" placeholder="Password" />
-    <button id="loginBtn" class="btn login-btn">Login</button>
-    <p id="authMsg"></p>
+    <!-- Tampilan Dashboard Utama (Disembunyikan sebelum login) -->
+    <div id="controlBox" style="display:none;">
+      <div class="content-wrapper">
+        
+        <!-- PANEL KIRI (Informasi) -->
+        <div class="panel-left">
+          <div class="status-box">
+            <div>
+              <p class="status-label">Status Operasional</p>
+              <p class="status-value" id="modeStatusText">Memuat...</p>
+            </div>
+            <div class="indicator" id="modeIndicator"></div>
+          </div>
+
+          <div class="telemetry-grid">
+            <div class="t-card">
+              <p class="t-title">Suhu Boks</p>
+              <p class="t-val">31.4 &deg;C</p>
+            </div>
+            <div class="t-card">
+              <p class="t-title">Tegangan Aki</p>
+              <p class="t-val">12.6 V</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL KANAN (Tombol Kontrol) -->
+        <div class="panel-right">
+          <div class="btn-grid">
+            <button class="btn-cmd btn-off" data-mode="0">OFF</button>
+            <button class="btn-cmd btn-on" data-mode="1">TES ON</button>
+            <button class="btn-cmd btn-p" data-mode="2">FL 0.5T-3.5G</button>
+            <button class="btn-cmd btn-p" data-mode="3">FL 0.5T-4.5G</button>
+            <button class="btn-cmd btn-p" data-mode="4">FL 0.5T-2.5G</button>
+            <button class="btn-cmd btn-p" data-mode="5">FL 1.0T-3.0G</button>
+          </div>
+          <button id="logoutBtn" class="btn logout-btn" style="margin-top: 15px; width: 100%;">Keluar (Logout)</button>
+        </div>
+
+      </div>
+    </div>
   </div>
-
-  <!-- Control UI -->
-  <div id="controlBox" style="display:none;">
-
-    <button id="gpio1Btn" class="gpio-button" data-gpio="gpio1">GPIO 1</button>
-    <div id="gpio1Status" class="gpio-status">Status: OFF</div>
-
-    <button id="gpio2Btn" class="gpio-button" data-gpio="gpio2">GPIO 2</button>
-    <div id="gpio2Status" class="gpio-status">Status: OFF</div>
-
-    <button id="gpio3Btn" class="gpio-button" data-gpio="gpio3">GPIO 3</button>
-    <div id="gpio3Status" class="gpio-status">Status: OFF</div>
-
-    <button id="logoutBtn" class="btn logout-btn">Logout</button>
-  </div>
-
-</div>
-
-<!-- JS + Firebase Integrated -->
-
 
 </body>
 </html>
