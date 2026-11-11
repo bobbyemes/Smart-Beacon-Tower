@@ -48,7 +48,7 @@
         </div>
         <div class="flex flex-col items-end gap-2 text-sm w-full lg:w-auto">
             <div class="flex items-center gap-2 border border-green-500/30 bg-green-500/10 text-green-400 px-4 py-2 rounded-lg font-semibold w-full lg:w-auto justify-center">
-                <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div> SYSTEM ONLINE
+                <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div> SYSTEM ONLINE (FIREBASE LIVE)
             </div>
             <div class="text-textmuted mt-1 w-full lg:w-auto text-right">
                 Waktu RTC: <span id="rtc-time" class="text-white font-medium">-</span>
@@ -138,17 +138,15 @@
                         <i class="far fa-lightbulb text-yellow-400"></i>
                         <span class="text-gray-300">Mode Lampu LED:</span>
                     </div>
-                    <!-- Form bawaan yang cocok dengan endpoint /set_led?mode=X di ESP32 Anda -->
-                    <form action="/set_led" method="GET" class="flex flex-col gap-2">
-                        <select name="mode" onchange="this.form.submit()" class="w-full bg-cardbg border border-blue-500/50 text-blue-400 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none cursor-pointer">
-                            <option value="0">MATI (OFF)</option>
-                            <option value="1">MENYALA TERUS</option>
-                            <option value="2" selected>FL 0.5T - 3.5G</option>
-                            <option value="3">FL 0.5T - 4.5G</option>
-                            <option value="4">FL 0.5T - 2.5G</option>
-                            <option value="5">FL 1.0T - 3.0G</option>
-                        </select>
-                    </form>
+                    <!-- Dropdown yang langsung mengirim data ke Firebase saat diubah -->
+                    <select id="mode-select" onchange="ubahModeLampu(this.value)" class="w-full bg-cardbg border border-blue-500/50 text-blue-400 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none cursor-pointer">
+                        <option value="0">MATI (OFF)</option>
+                        <option value="1">MENYALA TERUS</option>
+                        <option value="2">FL 0.5T - 3.5G</option>
+                        <option value="3">FL 0.5T - 4.5G</option>
+                        <option value="4">FL 0.5T - 2.5G</option>
+                        <option value="5">FL 1.0T - 3.0G</option>
+                    </select>
                 </div>
 
                 <div class="flex justify-between items-center border border-cardborder p-3 rounded-lg bg-darkbg/50">
@@ -211,7 +209,44 @@
 
     <footer class="text-center text-textmuted text-xs mt-8 mb-2">&copy; 2026 Smart SBNP Monitoring System - Distrik Navigasi Tanjung Intan</footer>
 
+    <!-- Firebase SDK (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <script>
+        // Konfigurasi Firebase Anda yang sesuai dengan ESP32
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKMyJWYI3VOjO2BeizafU7WGjkAECNjpM",
+            databaseURL: "https://trial-iot-37b7e-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const dbRef = firebase.database().ref('mode');
+
+        // Fungsi yang dipanggil saat opsi dropdown diubah di web
+        function ubahModeLampu(val) {
+            dbRef.set(parseInt(val))
+                .then(() => {
+                    console.log("Mode berhasil diubah ke: " + val);
+                })
+                .catch((error) => {
+                    console.error("Gagal mengubah mode: ", error);
+                });
+        }
+
+        // Sinkronisasi otomatis nilai dropdown dengan database secara real-time
+        dbRef.on('value', (snapshot) => {
+            const modeVal = snapshot.val();
+            if (modeVal !== null) {
+                const selectElement = document.getElementById('mode-select');
+                if (selectElement) {
+                    selectElement.value = modeVal;
+                }
+            }
+        });
+
+        // Jam Real-Time
         function updateJamRealTime() {
             const sekarang = new Date();
             const daftarBulan = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
