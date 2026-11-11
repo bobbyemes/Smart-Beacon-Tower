@@ -24,10 +24,14 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Menghubungkan ke file CSS eksternal -->
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body { 
+            background-color: #0A101A !important; 
+            color: #E2E8F0 !important; 
+        }
+    </style>
 </head>
-<body class="min-h-screen p-2 md:p-4 lg:p-6 text-sm font-sans flex flex-col">
+<body class="min-h-screen p-2 md:p-4 lg:p-6 text-sm font-sans flex flex-col" style="background-color: #0A101A;">
 
     <!-- Header Section -->
     <header class="bg-cardbg border border-cardborder rounded-xl p-4 mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center shadow-lg gap-4">
@@ -44,11 +48,10 @@
         </div>
         <div class="flex flex-col items-end gap-2 text-sm w-full lg:w-auto">
             <div class="flex items-center gap-2 border border-green-500/30 bg-green-500/10 text-green-400 px-4 py-2 rounded-lg font-semibold w-full lg:w-auto justify-center">
-                <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div> SYSTEM ONLINE (STATIC PAGE)
+                <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div> SYSTEM ONLINE
             </div>
             <div class="text-textmuted mt-1 w-full lg:w-auto text-right">
-                Waktu RTC: <span id="rtc-time" class="text-white font-medium">-</span><br>
-                Status: <span class="text-green-400">Live Preview</span>
+                Waktu RTC: <span id="rtc-time" class="text-white font-medium">-</span>
             </div>
         </div>
     </header>
@@ -133,16 +136,19 @@
                 <div class="border border-cardborder p-4 rounded-lg bg-darkbg/50">
                     <div class="flex items-center gap-2 mb-3">
                         <i class="far fa-lightbulb text-yellow-400"></i>
-                        <span class="text-gray-300">Mode Lampu LED (Demo):</span>
+                        <span class="text-gray-300">Mode Lampu LED:</span>
                     </div>
-                    <select id="demo-mode" class="w-full bg-cardbg border border-blue-500/50 text-blue-400 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none cursor-pointer">
-                        <option value="0">MATI (OFF)</option>
-                        <option value="1">MENYALA TERUS</option>
-                        <option value="2" selected>FL 0.5T - 3.5G</option>
-                        <option value="3">FL 0.5T - 4.5G</option>
-                        <option value="4">FL 0.5T - 2.5G</option>
-                        <option value="5">FL 1.0T - 3.0G</option>
-                    </select>
+                    <!-- Form bawaan yang cocok dengan endpoint /set_led?mode=X di ESP32 Anda -->
+                    <form action="/set_led" method="GET" class="flex flex-col gap-2">
+                        <select name="mode" onchange="this.form.submit()" class="w-full bg-cardbg border border-blue-500/50 text-blue-400 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none cursor-pointer">
+                            <option value="0">MATI (OFF)</option>
+                            <option value="1">MENYALA TERUS</option>
+                            <option value="2" selected>FL 0.5T - 3.5G</option>
+                            <option value="3">FL 0.5T - 4.5G</option>
+                            <option value="4">FL 0.5T - 2.5G</option>
+                            <option value="5">FL 1.0T - 3.0G</option>
+                        </select>
+                    </form>
                 </div>
 
                 <div class="flex justify-between items-center border border-cardborder p-3 rounded-lg bg-darkbg/50">
@@ -191,7 +197,6 @@
                     <div class="w-full bg-cardborder h-2.5 rounded-full overflow-hidden"><div class="bg-green-400 h-full rounded-full" style="width: 45%"></div></div>
                 </div>
                 <div class="border border-cardborder p-4 rounded-lg bg-darkbg/50">
-                    <div class="text-textmuted text-xs mb-1">Status Kelembaban:</div>
                     <div class="flex justify-between items-end mb-2">
                         <span class="text-textmuted text-sm">Kelembaban Box Bawah:</span>
                         <span class="text-xl font-bold text-cyan-400">65 <span class="text-sm font-normal text-textmuted">%</span></span>
@@ -207,7 +212,6 @@
     <footer class="text-center text-textmuted text-xs mt-8 mb-2">&copy; 2026 Smart SBNP Monitoring System - Distrik Navigasi Tanjung Intan</footer>
 
     <script>
-        // Jam Real-Time
         function updateJamRealTime() {
             const sekarang = new Date();
             const daftarBulan = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
