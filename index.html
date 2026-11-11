@@ -1,71 +1,227 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart SBNP Disnav Tanjung Intan - Beta Version 2.1</title>
-  <link rel="stylesheet" href="styles.css">
-  <script type="module" src="app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART SBNP - Beta Version 1.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0A101A',
+                        cardbg: '#121A25',
+                        cardborder: '#233142',
+                        accentblue: '#2B89D6',
+                        accentgreen: '#28C76F',
+                        textmuted: '#8B9BB4'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Menghubungkan ke file CSS eksternal -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="min-h-screen p-2 md:p-4 lg:p-6 text-sm font-sans flex flex-col">
 
-  <div class="card">
-    <div class="header">
-      <h3>Distrik Navigasi Tanjung Intan</h3>
-      <h1>Menara Suar Bengkel Navigasi</h1>
-      <div id="statusBadge" class="status-badge offline">Offline</div>
-    </div>
-
-    <!-- Tampilan Login -->
-    <div id="authBox">
-      <input id="emailField" type="email" placeholder="Masukkan Email" />
-      <input id="passwordField" type="password" placeholder="Masukkan Password" />
-      <button id="loginBtn" class="btn login-btn">Login ke Sistem</button>
-      <p id="authMsg"></p>
-    </div>
-
-    <!-- Tampilan Dashboard Utama (Disembunyikan sebelum login) -->
-    <div id="controlBox" style="display:none;">
-      <div class="content-wrapper">
-        
-        <!-- PANEL KIRI (Informasi) -->
-        <div class="panel-left">
-          <div class="status-box">
+    <!-- Header Section -->
+    <header class="bg-cardbg border border-cardborder rounded-xl p-4 mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center shadow-lg gap-4">
+        <div class="flex items-center gap-4">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7m54vYVZ0kvnFyUNH7XwcC6VLwnrcQxLTSmShHga1OmnIXDrd09hunVE&s=10" alt="Logo Navigasi" class="h-[80px] w-[80px] rounded-full object-cover border-2 border-blue-500/30">
             <div>
-              <p class="status-label">Status Operasional</p>
-              <p class="status-value" id="modeStatusText">Memuat...</p>
+                <div class="flex items-center gap-3 mb-1">
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wide text-white">SMART SBNP MONITORING</h1>
+                    <span class="bg-blue-600/30 text-blue-400 text-xs px-2 py-1 rounded font-semibold border border-blue-600/50">BETA v1.0</span>
+                </div>
+                <div class="text-blue-300 text-xs font-semibold mb-1 tracking-wider">DISTRIK NAVIGASI TIPE A KELAS III TANJUNG INTAN</div>
+                <div class="text-textmuted text-sm">Unit ID: <span class="text-blue-300 font-medium">DSI 4108</span> <span class="mx-2">|</span> Lokasi: <span class="text-blue-300 font-medium">Pelampung Suar 18</span></div>
             </div>
-            <div class="indicator" id="modeIndicator"></div>
-          </div>
+        </div>
+        <div class="flex flex-col items-end gap-2 text-sm w-full lg:w-auto">
+            <div class="flex items-center gap-2 border border-green-500/30 bg-green-500/10 text-green-400 px-4 py-2 rounded-lg font-semibold w-full lg:w-auto justify-center">
+                <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div> SYSTEM ONLINE (STATIC PAGE)
+            </div>
+            <div class="text-textmuted mt-1 w-full lg:w-auto text-right">
+                Waktu RTC: <span id="rtc-time" class="text-white font-medium">-</span><br>
+                Status: <span class="text-green-400">Live Preview</span>
+            </div>
+        </div>
+    </header>
 
-          <div class="telemetry-grid">
-            <div class="t-card">
-              <p class="t-title">Suhu Boks</p>
-              <p class="t-val">31.4 &deg;C</p>
+    <!-- Main Grid -->
+    <main class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 flex-grow">
+
+        <!-- Column 1: NAVIGASI & GPS -->
+        <div class="bg-cardbg border border-cardborder rounded-xl p-4 shadow-lg flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-blue-400 font-semibold flex items-center gap-2"><i class="fas fa-crosshairs"></i> NAVIGASI & GPS</h2>
+                <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs px-2 py-1 rounded">Geofence: OK</span>
             </div>
-            <div class="t-card">
-              <p class="t-title">Tegangan Aki</p>
-              <p class="t-val">12.6 V</p>
+            <div class="h-52 w-full rounded-lg border border-cardborder z-0 mb-4 overflow-hidden bg-darkbg">
+                <iframe width="100%" height="100%" frameborder="0" style="border:0; filter: brightness(0.8) contrast(1.2);" src="https://maps.google.com/maps?q=-7.735669045262259,108.99406235220428&hl=id&z=13&output=embed" allowfullscreen></iframe>
             </div>
-          </div>
+            <div class="flex flex-col gap-3 mt-auto">
+                <div class="flex justify-between items-center border border-cardborder p-3 rounded-lg bg-darkbg/50">
+                    <span class="text-textmuted flex items-center gap-2"><i class="fas fa-ruler-combined"></i> Kemiringan (Tilt):</span>
+                    <span class="font-semibold text-green-400">5° (Aman)</span>
+                </div>
+                <div class="flex justify-between items-center border border-cardborder p-3 rounded-lg bg-darkbg/50">
+                    <span class="text-textmuted flex items-center gap-2"><i class="fas fa-shield-alt"></i> Status Tabrakan:</span>
+                    <span class="font-semibold text-green-400 flex items-center gap-1"><i class="fas fa-check-circle"></i> Aman</span>
+                </div>
+            </div>
         </div>
 
-        <!-- PANEL KANAN (Tombol Kontrol) -->
-        <div class="panel-right">
-          <div class="btn-grid">
-            <button class="btn-cmd btn-off" data-mode="0">OFF</button>
-            <button class="btn-cmd btn-on" data-mode="1">TES ON</button>
-            <button class="btn-cmd btn-p" data-mode="2">FL 0.5T-3.5G</button>
-            <button class="btn-cmd btn-p" data-mode="3">FL 0.5T-4.5G</button>
-            <button class="btn-cmd btn-p" data-mode="4">FL 0.5T-2.5G</button>
-            <button class="btn-cmd btn-p" data-mode="5">FL 1.0T-3.0G</button>
-          </div>
-          <button id="logoutBtn" class="btn logout-btn" style="margin-top: 15px; width: 100%;">Keluar (Logout)</button>
+        <!-- Column 2: SISTEM KELISTRIKAN & GRAFIK -->
+        <div class="bg-cardbg border border-cardborder rounded-xl p-4 shadow-lg flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-blue-400 font-semibold flex items-center gap-2"><i class="fas fa-battery-half"></i> SISTEM KELISTRIKAN</h2>
+                <span class="bg-green-500/20 text-green-400 border border-green-500/30 text-xs px-2 py-1 rounded">80% SoC</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="border border-cardborder rounded-lg p-3 text-center bg-darkbg/50">
+                    <div class="text-textmuted text-xs mb-1">Tegangan Aki</div>
+                    <div class="text-3xl font-bold text-green-400">12.4 <span class="text-sm font-normal text-textmuted">V</span></div>
+                </div>
+                <div class="border border-cardborder rounded-lg p-3 text-center bg-darkbg/50">
+                    <div class="text-textmuted text-xs mb-1">Arus Beban</div>
+                    <div class="text-3xl font-bold text-blue-400">0.85 <span class="text-sm font-normal text-textmuted">A</span></div>
+                </div>
+            </div>
+            <div class="flex-grow flex flex-col justify-end">
+                <div class="text-xs text-textmuted mb-2">Tren Voltase (24 Jam Terakhir)</div>
+                <div class="h-40 w-full relative bg-darkbg/60 border border-cardborder rounded-lg p-2 flex flex-col justify-between">
+                    <div class="flex justify-between text-[10px] text-textmuted">
+                        <span>15V</span><span>13V</span><span>10V</span>
+                    </div>
+                    <div class="w-full h-24 relative flex items-center">
+                        <svg class="w-full h-full overflow-visible" viewBox="0 0 300 100" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:0.4" />
+                                    <stop offset="100%" style="stop-color:#2ecc71;stop-opacity:0.0" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M 0,20 Q 50,35 100,50 T 200,60 T 300,55 L 300,100 L 0,100 Z" fill="url(#grad)" />
+                            <path d="M 0,20 Q 50,35 100,50 T 200,60 T 300,55" fill="none" stroke="#2ecc71" stroke-width="2.5" />
+                            <circle cx="0" cy="20" r="3.5" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+                            <circle cx="50" cy="38" r="3.5" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+                            <circle cx="100" cy="50" r="3.5" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+                            <circle cx="150" cy="58" r="3.5" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+                            <circle cx="200" cy="60" r="3.5" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+                            <circle cx="250" cy="53" r="3.5" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+                            <circle cx="300" cy="55" r="3.5" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+                        </svg>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-textmuted pt-1 border-t border-cardborder">
+                        <span>12:00</span><span>16:00</span><span>20:00</span><span>00:00</span><span>04:00</span><span>08:00</span><span>11:00</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-      </div>
-    </div>
-  </div>
+        <!-- Column 3: STATUS SYSTEM & SECURITY -->
+        <div class="bg-cardbg border border-cardborder rounded-xl p-4 shadow-lg flex flex-col">
+            <h2 class="text-blue-400 font-semibold flex items-center gap-2 mb-6"><i class="fas fa-sliders-h"></i> STATUS SYSTEM & SECURITY</h2>
+            <div class="flex flex-col gap-4">
+                
+                <div class="border border-cardborder p-4 rounded-lg bg-darkbg/50">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="far fa-lightbulb text-yellow-400"></i>
+                        <span class="text-gray-300">Mode Lampu LED (Demo):</span>
+                    </div>
+                    <select id="demo-mode" class="w-full bg-cardbg border border-blue-500/50 text-blue-400 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none cursor-pointer">
+                        <option value="0">MATI (OFF)</option>
+                        <option value="1">MENYALA TERUS</option>
+                        <option value="2" selected>FL 0.5T - 3.5G</option>
+                        <option value="3">FL 0.5T - 4.5G</option>
+                        <option value="4">FL 0.5T - 2.5G</option>
+                        <option value="5">FL 1.0T - 3.0G</option>
+                    </select>
+                </div>
 
+                <div class="flex justify-between items-center border border-cardborder p-3 rounded-lg bg-darkbg/50">
+                    <span class="text-gray-300 flex items-center gap-2"><i class="fas fa-crow text-textmuted"></i> Pengusir Burung:</span>
+                    <span class="bg-green-900/40 text-green-400 border border-green-500/30 px-3 py-1 rounded text-xs font-semibold">AKTIF</span>
+                </div>
+
+                <div class="flex justify-between items-center border border-cardborder p-3 rounded-lg bg-darkbg/50 mb-2">
+                    <span class="text-gray-300 flex items-center gap-2"><i class="fas fa-door-closed text-textmuted"></i> Sensor Pintu Box:</span>
+                    <span class="text-green-400 text-xs font-semibold flex items-center gap-1"><i class="fas fa-lock"></i> TERKUNCI AMAN</span>
+                </div>
+
+                <div class="border border-blue-900/50 bg-blue-900/10 p-4 rounded-lg mt-auto">
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-blue-900/50">
+                        <h3 class="text-blue-400 text-xs font-semibold flex items-center gap-2"><i class="fas fa-wrench"></i> Log Maintenance Terakhir</h3>
+                        <span class="text-[10px] text-textmuted">OLED Synced</span>
+                    </div>
+                    <div class="grid grid-cols-[80px_1fr] gap-2 text-xs">
+                        <div class="text-textmuted">Tanggal:</div><div class="text-white font-medium">11 AUG 2026</div>
+                        <div class="text-textmuted">Teknisi:</div><div class="text-white font-medium">M. SYAILENDRA</div>
+                        <div class="text-textmuted">Aksi:</div><div class="text-green-400 font-medium">CLN-LENS & CHK-WIRING</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 4: KONDISI FISIK & BOX -->
+        <div class="bg-cardbg border border-cardborder rounded-xl p-4 shadow-lg flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-blue-400 font-semibold flex items-center gap-2"><i class="fas fa-thermometer-half"></i> KONDISI FISIK & BOX</h2>
+                <span class="text-yellow-400 text-xs font-semibold flex items-center gap-1"><i class="fas fa-sun"></i> 850 Lux</span>
+            </div>
+            <div class="flex flex-col gap-4">
+                <div class="border border-cardborder p-4 rounded-lg bg-darkbg/50">
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-textmuted text-sm">Suhu Atas:</span>
+                        <span class="text-xl font-bold text-orange-400">45.2 <span class="text-sm font-normal text-textmuted">°C</span></span>
+                    </div>
+                    <div class="w-full bg-cardborder h-2.5 rounded-full overflow-hidden"><div class="bg-orange-400 h-full rounded-full" style="width: 75%"></div></div>
+                </div>
+                <div class="border border-cardborder p-4 rounded-lg bg-darkbg/50">
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-textmuted text-sm">Suhu Box Bawah:</span>
+                        <span class="text-xl font-bold text-green-400">32.1 <span class="text-sm font-normal text-textmuted">°C</span></span>
+                    </div>
+                    <div class="w-full bg-cardborder h-2.5 rounded-full overflow-hidden"><div class="bg-green-400 h-full rounded-full" style="width: 45%"></div></div>
+                </div>
+                <div class="border border-cardborder p-4 rounded-lg bg-darkbg/50">
+                    <div class="text-textmuted text-xs mb-1">Status Kelembaban:</div>
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-textmuted text-sm">Kelembaban Box Bawah:</span>
+                        <span class="text-xl font-bold text-cyan-400">65 <span class="text-sm font-normal text-textmuted">%</span></span>
+                    </div>
+                    <div class="w-full bg-cardborder h-2.5 rounded-full overflow-hidden"><div class="bg-cyan-400 h-full rounded-full" style="width: 65%"></div></div>
+                </div>
+            </div>
+            <div class="mt-auto pt-4 text-xs text-textmuted italic">*Bila kelembaban >90%,<br>indikasi paking box bocor air laut.</div>
+        </div>
+
+    </main>
+
+    <footer class="text-center text-textmuted text-xs mt-8 mb-2">&copy; 2026 Smart SBNP Monitoring System - Distrik Navigasi Tanjung Intan</footer>
+
+    <script>
+        // Jam Real-Time
+        function updateJamRealTime() {
+            const sekarang = new Date();
+            const daftarBulan = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            const tanggal = String(sekarang.getDate()).padStart(2, '0');
+            const bulan = daftarBulan[sekarang.getMonth()];
+            const tahun = sekarang.getFullYear();
+            const jam = String(sekarang.getHours()).padStart(2, '0');
+            const menit = String(sekarang.getMinutes()).padStart(2, '0');
+            const detik = String(sekarang.getSeconds()).padStart(2, '0');
+            const elemenRTC = document.getElementById('rtc-time');
+            if(elemenRTC) elemenRTC.textContent = `${tanggal} ${bulan} ${tahun} ${jam}:${menit}:${detik} WIB`;
+        }
+        updateJamRealTime();
+        setInterval(updateJamRealTime, 1000);
+    </script>
 </body>
 </html>
